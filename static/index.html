@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <title>A Multiplayer Game</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel='stylesheet' type='text/css' href='/static/style.css'>
+  </head>
+
+  <body onresize="resizeGame()" back>
+      <div id="gameArea">
+
+        <canvas id="canvas"></canvas>
+
+        <div id="chat">
+
+          <div id=messages>
+            <p class=message>hi</p>
+            <p class=message>hi1</p>
+          </div>
+
+          <div id="chatInputArea">
+            <input id="chatInput" type='text' name='m'>
+            <button id="sendButton" type="button">Send</button>
+          </div>
+
+        </div>
+      </div>
+  </body>
+
+  <script src="/static/game.js"></script>
+</html>
