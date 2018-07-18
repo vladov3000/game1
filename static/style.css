@@ -2,6 +2,14 @@ body{
 	background-color:grey;
 }
 
+#usernameInput{
+	position:absolute;
+	top:47.5%;
+	left:35%;
+	width:30%;
+	height:5%;
+}
+
 #chat {
 	position:absolute;
 	height:100%;
@@ -13,9 +21,9 @@ body{
 
 #messages{
 	position:absolute;
-	top:0;
+	top:49%;
 	width:100%;
-	height:95%;
+	height:42.5%;
 	overflow-y:auto;
 	display:flex;
 	flex-direction: column-reverse;
@@ -38,14 +46,7 @@ body{
 #chatInput{
 	position:absolute;
 	height:100%;
-	width:80%;
-}
-
-#sendButton{
-	position:absolute;
-	height:100%;
-	width:20%;
-	right:0;
+	width:93%;
 }
 
 #gameArea{

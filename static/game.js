@@ -1,7 +1,4 @@
 var socket = io();
-socket.on('message', function(data) {
-  console.log(data);
-});
 var movement = {
   up: false,
   down: false,
@@ -46,6 +43,33 @@ setInterval(function() {
   socket.emit('movement', movement);
 }, 1000 / 60);
 
+var sendButton = document.getElementById("sendButton");
+var chatInputArea = document.getElementById("chatInputArea");
+var chatInput = document.getElementById("chatInput");
+var canvas = document.getElementById('canvas');
+var scale = canvas.width/800;
+var messages = document.getElementById("messages");
+
+function sendMessage(){
+	socket.emit('sendMessage',chatInput.value);
+	chatInput.value = "";
+}
+
+chatInput.onkeydown = function(event) {
+    if (event.keyCode == 13) {
+        sendMessage();
+    }
+}
+
+socket.on ('loadMessage',function(data){
+	console.log(data)
+	var para = document.createElement("p");
+	para.className = "message";
+	var text = document.createTextNode(data);
+	para.appendChild(text);
+	messages.prepend(para);
+});
+
 function resizeGame() {
     var gameArea = document.getElementById('gameArea');
     var widthToHeight = 4 / 3;
@@ -69,10 +93,10 @@ function resizeGame() {
     var gameCanvas = document.getElementById('canvas');
     gameCanvas.width = newWidth;
     gameCanvas.height = newHeight;
+    scale = gameCanvas.width/800;
 }
 resizeGame()
 
-var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
 socket.on('state', function(players) {
   context.clearRect(0, 0, canvas.width, canvas.height);
@@ -80,10 +104,12 @@ socket.on('state', function(players) {
   for (var id in players) {
     var player = players[id];
     context.beginPath();
-    context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
+    context.arc(player.x*scale, player.y*scale, 10*scale, 0, 2 * Math.PI);
     context.fill();
   }
 });
+
+
 
 
 

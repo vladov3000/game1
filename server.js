@@ -28,6 +28,7 @@ io.on('connection', function(socket) {
       y: 300
     };
   });
+
   socket.on('movement', function(data) {
     var player = players[socket.id] || {};
     if (data.left) {
@@ -42,6 +43,11 @@ io.on('connection', function(socket) {
     if (data.down) {
       player.y += 5;
     }
+  });
+
+  socket.on('sendMessage', function(data){
+  	console.log(data);
+  	io.sockets.emit('loadMessage', data);
   });
 });
 
