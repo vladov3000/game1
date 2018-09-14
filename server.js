@@ -21,12 +21,22 @@ io.on('connection', function(socket) {
 });
 
 var players = {};
+rev = 360;
+rspeed = 10;
 io.on('connection', function(socket) {
-  socket.on('new player', function() {
+
+  socket.on('new player', function(data) {
     players[socket.id] = {
       x: 300,
-      y: 300
+      y: 300,
+      gunAngle: 0,
+      username: data[0],
+      type: data[1]
     };
+    console.log(players[socket.id]);
+
+    io.sockets.emit('loadMessage', players[socket.id].username+' has joined');
+    socket.emit('socketid',socket.id)
   });
 
   socket.on('movement', function(data) {
@@ -43,11 +53,21 @@ io.on('connection', function(socket) {
     if (data.down) {
       player.y += 5;
     }
+    if (data.rleft) {
+      player.gunAngle += rspeed;
+      //console.log('rleft');
+    }
+    if (data.rright) {
+      player.gunAngle -= rspeed;
+      //console.log('rright');
+    };
+    player.gunAngle %= rev
+    //console.log(player.gunAngle);
   });
 
   socket.on('sendMessage', function(data){
-  	console.log(data);
-  	io.sockets.emit('loadMessage', data);
+  	//console.log('['+players[socket.id].username+']: '+data);
+  	io.sockets.emit('loadMessage', '['+players[socket.id].username+']: '+data);
   });
 });
 
