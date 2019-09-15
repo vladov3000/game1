@@ -54,11 +54,11 @@ io.on('connection', function(socket) {
       player.y += 5;
     }
     if (data.rleft) {
-      player.gunAngle += rspeed;
+      player.gunAngle -= rspeed;
       //console.log('rleft');
     }
     if (data.rright) {
-      player.gunAngle -= rspeed;
+      player.gunAngle += rspeed;
       //console.log('rright');
     };
     player.gunAngle %= rev

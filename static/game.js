@@ -156,6 +156,7 @@ function startGame(){
 	}
 
 	function circle(context,center,radius,color='green') {
+		context.fillStyle = color;
 		context.beginPath();
 	    context.arc(center.x, center.y, radius, 0, 2 * Math.PI);
 	    context.fill();
@@ -165,7 +166,6 @@ function startGame(){
 	var context = canvas.getContext('2d');
 	socket.on('state', function(players) {
 	  context.clearRect(0, 0, canvas.width, canvas.height);
-	  context.fillStyle = 'green';
 	  var client = players[socketid]
 	  for (var id in players) {
 		    var player = players[id];
@@ -186,7 +186,7 @@ function startGame(){
 		    circle(context,
 		    	{x:(absLoc.x)*scale,
 		    	y:(absLoc.y)*scale
-		    },10*scale);
+		    },10*scale,player.type);
 	    }
 	});
 }
