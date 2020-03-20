@@ -1,8 +1,6 @@
 import { getAbsLoc } from './utils.js'
 import { line, circle } from './draw.js'
 
-var gunLen = 25
-
 export function renderPlayer(player, client, context, scale) {
     let absLoc = getAbsLoc(player,client)
 
@@ -10,14 +8,14 @@ export function renderPlayer(player, client, context, scale) {
 		x:(absLoc.x)*scale,
 		y:(absLoc.y)*scale
 	},{
-		x:(absLoc.x+gunLen*Math.cos(player.gunAngle))*scale,
-		y:(absLoc.y+gunLen*Math.sin(player.gunAngle))*scale
-	}, 10*scale);
+		x:(absLoc.x+player.gunLen*Math.cos(player.gunAngle))*scale,
+		y:(absLoc.y+player.gunLen*Math.sin(player.gunAngle))*scale
+	}, player.gunWidth*scale);
 
 	circle(context,{
 		x:(absLoc.x)*scale,
 		y:(absLoc.y)*scale
-	}, 10*scale, player.type);
+	}, player.radius*scale, player.type);
 }
 
 export function renderBullet(bullet, client, context, scale) {
@@ -25,5 +23,5 @@ export function renderBullet(bullet, client, context, scale) {
 	circle(context,
     	{x:(absLoc.x)*scale,
     	y:(absLoc.y)*scale
-    },5*scale,'yellow');
+    },bullet.radius*scale,'yellow');
 }

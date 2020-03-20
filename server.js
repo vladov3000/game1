@@ -1,3 +1,4 @@
+// Local imports
 var updateGameObjects = require('./updates.js').updateGameObjects
 
 // Dependencies
@@ -26,7 +27,8 @@ io.on('connection', function(socket) {
 // Init Game Objects
 var gameObjects = {
   players:{},
-  bullets:[]
+  bullets:[],
+  objects:{}
 };
 
 // game vars
@@ -38,17 +40,22 @@ io.on('connection', function(socket) {
 
   socket.on('new player', function(data) {
     gameObjects.players[socket.id] = {
+      name: 'player',
       x: 300,
       y: 300,
+      radius: 10,
       gunAngle: 0,
+      gunLen: 25,
+      gunWidth: 10,
       username: data[0],
       type: data[1],
-      reload: 0
+      reload: 0,
+      health: 100
     }
     console.log(gameObjects.players[socket.id]);
 
     io.sockets.emit('loadMessage', gameObjects.players[socket.id].username + ' has joined');
-    socket.emit('socketid',socket.id)
+    socket.emit('socketid', socket.id);
   });
 
   socket.on('movement', function(data) {
@@ -71,9 +78,11 @@ io.on('connection', function(socket) {
 
     if (data.fire && player.reload < 0) {
       gameObjects.bullets.push({
+          name: 'bullet',
           travangle: player.gunAngle,
           x: player.x + gunLen*Math.cos(player.gunAngle),
           y: player.y + gunLen*Math.sin(player.gunAngle),
+          radius: 5,
           death: 120
       });
       player.reload = reloadtime + 1;
@@ -83,7 +92,7 @@ io.on('connection', function(socket) {
   });
 
   socket.on('sendMessage', function(data){
-  	//console.log('['+gameObjects.players[socket.id].username+']: '+data);
+  	console.log('['+gameObjects.players[socket.id].username+']: '+data);
   	io.sockets.emit('loadMessage', '['+gameObjects.players[socket.id].username+']: '+data);
   });
 });
