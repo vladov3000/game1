@@ -1,4 +1,4 @@
-var center = {
+export var center = {
 	x:400,
 	y:300
 }
@@ -8,3 +8,17 @@ export function getAbsLoc(object, client) {
     		y:object.y-client.y+center.y};
 
 }
+
+export function getMousePos(canvas, evt) {
+	// get mouse position on canvas relative to center
+
+	var rect = canvas.getBoundingClientRect(), // abs. size of element
+	scaleX = canvas.width / rect.width,    // relationship bitmap vs. element for X
+	scaleY = canvas.height / rect.height;  // relationship bitmap vs. element for Y
+
+	return {
+		x: (evt.clientX - rect.left) * scaleX - center.x,   
+		y: (evt.clientY - rect.top) * scaleY - center.y
+	}
+}
+

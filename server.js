@@ -6,6 +6,7 @@ var socketIO = require('socket.io');
 var app = express();
 var server = http.Server(app);
 var io = socketIO(server);
+
 app.set('port', 5000);
 app.use('/src', express.static(__dirname + '/src'));
 // Routing
@@ -20,6 +21,7 @@ server.listen(5000, function() {
 io.on('connection', function(socket) {
 });
 
+// Add Game Objects
 var gameObjects = {
   players:{},
   bullets:[]
@@ -33,10 +35,9 @@ gameObjects.bullets.push({
 });
 */
 
-rev = 360;
-rspeed = 10;
 bulletv = 10;
-reloadtime = 10;
+reloadtime = 40;
+
 io.on('connection', function(socket) {
 
   socket.on('new player', function(data) {
@@ -68,21 +69,13 @@ io.on('connection', function(socket) {
     if (data.down) {
       player.y += 5;
     }
-    if (data.rleft) {
-      player.gunAngle -= rspeed;
-      //console.log('rleft');
-    }
-    if (data.rright) {
-      player.gunAngle += rspeed;
-      //console.log('rright');
-    };
-    player.gunAngle %= rev
+    player.gunAngle = data.facing;
     //console.log(player.gunAngle);
     if (player.reload < 0){
       gameObjects.bullets.push({
-          travangle:player.gunAngle * Math.PI/180,
-          x:player.x,
-          y:player.y,
+          travangle: player.gunAngle,
+          x: player.x,
+          y: player.y,
           death: 120
       });
       player.reload = reloadtime;
@@ -100,7 +93,7 @@ io.on('connection', function(socket) {
 //update game state
 setInterval(function() {
   for (i=0; i<gameObjects.bullets.length; i++){
-    bullet = gameObjects.bullets[i];
+    let bullet = gameObjects.bullets[i];
     bullet.x += bulletv*Math.cos(bullet.travangle);
     bullet.y += bulletv*Math.sin(bullet.travangle);
     bullet.death -= 1;

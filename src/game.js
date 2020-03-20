@@ -1,5 +1,5 @@
 import { renderPlayer, renderBullet } from './renders.js';
-import { getAbsLoc } from './utils.js';
+import { getAbsLoc, getMousePos } from './utils.js';
 import { line, circle } from './draw.js'
 
 var socket = io();
@@ -33,6 +33,7 @@ var movement = {
   right: false,
   rright: false,
   rleft: false,
+  facing: 0,
 }
 var socketid = '';
 
@@ -113,12 +114,6 @@ function keyToMove() {
 			    case 83: // S
 			      	movement.down = true;
 			      	break;
-			    case 81: //Q
-			    	movement.rleft = true;
-			    	break;
-			    case 69: //E
-			    	movement.rright = true;
-			    	break;
 			}
 		}
 	});
@@ -137,12 +132,14 @@ function keyToMove() {
 		    case 83: // S
 		      movement.down = false;
 		      break;
-		    case 81: //Q
-		    	movement.rleft = false;
-		    case 69: //E
-			    movement.rright = false;
 	  	}
 	});
+
+	document.addEventListener('mousemove', function(e) {
+		let point = getMousePos(canvas, e);
+        movement.facing = Math.atan(point.y / point.x);
+        if (point.x < 0) movement.facing += Math.PI;
+    });
 
 	setInterval(function() {
 	  socket.emit('movement', movement);
