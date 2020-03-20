@@ -1,16 +1,31 @@
+import { renderPlayer, renderBullet } from './renders.js';
+import { getAbsLoc } from './utils.js';
+import { line, circle } from './draw.js'
+
 var socket = io();
 
+// get components
+var gameArea = document.getElementById('gameArea');
 var sendButton = document.getElementById("sendButton");
 var chat = document.getElementById("chat")
 var chatInputArea = document.getElementById("chatInputArea");
 var chatInput = document.getElementById("chatInput");
 var canvas = document.getElementById('canvas');
-var scale = canvas.width/800;
 var messages = document.getElementById("messages");
 var usernameInput = document.getElementById("usernameInput");
 var onEnter = document.getElementById("onEnter");
 var classSelector = document.getElementById("classSelector");
+var body = document.getElementsByTagName("BODY")[0]
+var submitOnEnter = document.getElementById("submitOnEnter")
 
+// set component fields
+chat.style.display = "none";
+body.onresize = resizeGame;
+submitOnEnter.onclick = startGame;
+
+// set general vars
+var scale = canvas.width/800;
+var context = canvas.getContext('2d');
 var movement = {
   up: false,
   down: false,
@@ -20,17 +35,10 @@ var movement = {
   rleft: false,
 }
 var socketid = '';
-var center = {
-	x:400,
-	y:300
-}
-rev=360;
-gunLen=25;
 
-chat.style.display = "none";
 
 function resizeGame() {
-    var gameArea = document.getElementById('gameArea');
+	// keep constant game size
     var widthToHeight = 4 / 3;
     var newWidth = window.innerWidth;
     var newHeight = window.innerHeight;
@@ -56,8 +64,39 @@ function resizeGame() {
 }
 resizeGame()
 
-function startGame(){
-	//console.log(username);
+function startChat () {
+	// reveal chat and add send, load, and submit socket emitters
+
+	chat.style.display = "block";
+
+	function sendMessage(){
+		socket.emit('sendMessage',chatInput.value.trim());
+		chatInput.value = "";
+	}
+
+	chatInput.onkeydown = function(event) {
+	    if (event.keyCode == 13) {
+	    	console.log(chatInput.value.trim())
+	    	if (chatInput.value.trim()!=""){
+	        	sendMessage();
+	    	} else {
+	    		chatIput.value = "";
+	    	}
+	    }
+	}
+
+	socket.on ('loadMessage',function(data){
+		//console.log(data);
+		let para = document.createElement("p");
+		para.className = "message";
+		let text = document.createTextNode(data);
+		para.appendChild(text);
+		messages.prepend(para);
+	});
+}
+
+function keyToMove() {
+	// map keyboard inputs to movement and make movement emitter
 
 	document.addEventListener('keydown', function(event) {
 		if(chatInput != document.activeElement){
@@ -105,90 +144,55 @@ function startGame(){
 	  	}
 	});
 
+	setInterval(function() {
+	  socket.emit('movement', movement);
+	}, 1000 / 60);
+}
+
+function addPlayer() {
+	// tell server to add new player
+
 	socket.emit('new player',[usernameInput.value,classSelector.value]);
 
 	socket.on('socketid',function(data){
 		socketid = data;
 		console.log('socketid: '+socketid)
 	});
+}
 
+function renderGameObjects(gameObjects) {
+  	context.clearRect(0, 0, canvas.width, canvas.height);
+
+	var players = gameObjects.players;
+	var client = players[socketid];
+
+	//render bullets
+	var bullets = gameObjects.bullets;
+    for (var bullet of bullets) {
+    	renderBullet(bullet, client, context, scale)
+    }
+
+	//render players
+	for (var id in players) {
+		   renderPlayer(players[id], client, context, scale)
+	}
+}
+
+function startGame(){
+	// remove start menu ui
 	onEnter.parentNode.removeChild(onEnter);
 
-	setInterval(function() {
-	  socket.emit('movement', movement);
-	}, 1000 / 60);
+	// add player on server
+	addPlayer();
 
-	chat.style.display = "block";
+	// setup movement through keyboard inputs
+	keyToMove();
 
-	function sendMessage(){
-		socket.emit('sendMessage',chatInput.value.trim());
-		chatInput.value = "";
-	}
+	// setup chat
+	startChat();
 
-	chatInput.onkeydown = function(event) {
-	    if (event.keyCode == 13) {
-	    	console.log(chatInput.value.trim())
-	    	if (chatInput.value.trim()!=""){
-	        	sendMessage();
-	    	} else {
-	    		chatIput.value = "";
-	    	}
-	    }
-	}
-
-	socket.on ('loadMessage',function(data){
-		//console.log(data);
-		var para = document.createElement("p");
-		para.className = "message";
-		var text = document.createTextNode(data);
-		para.appendChild(text);
-		messages.prepend(para);
-	});
-
-	function line(context,a,b,width,color='grey'){
-		context.strokeStyle = color;
-		context.lineWidth = width;
-		context.beginPath();
-	    context.moveTo(a.x,a.y)
-	    context.lineTo(b.x,b.y)
-	    context.stroke()
-	    context.closePath();
-	}
-
-	function circle(context,center,radius,color='green') {
-		context.fillStyle = color;
-		context.beginPath();
-	    context.arc(center.x, center.y, radius, 0, 2 * Math.PI);
-	    context.fill();
-	    context.closePath();
-	}
-
-	var context = canvas.getContext('2d');
-	socket.on('state', function(players) {
-	  context.clearRect(0, 0, canvas.width, canvas.height);
-	  var client = players[socketid]
-	  for (var id in players) {
-		    var player = players[id];
-		    rgAngle = player.gunAngle/rev*2*Math.PI;
-		    absLoc = {
-		    	x:player.x-client.x+center.x,
-		    	y:player.y-client.y+center.y
-		    }
-
-		    line(context,
-		    	{x:(absLoc.x)*scale,
-		    	y:(absLoc.y)*scale
-		    },{x:(absLoc.x+gunLen*Math.cos(rgAngle))*scale,
-		    	y:(absLoc.y+gunLen*Math.sin(rgAngle))*scale
-		    }, 10*scale);
-
-
-		    circle(context,
-		    	{x:(absLoc.x)*scale,
-		    	y:(absLoc.y)*scale
-		    },10*scale,player.type);
-	    }
-	});
+	// render gameObjects recieved from server
+	socket.on('state', renderGameObjects);
 }
 
 

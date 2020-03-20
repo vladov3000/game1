@@ -2,11 +2,13 @@
   <head>
     <title>A Multiplayer Game</title>
     <script src="/socket.io/socket.io.js"></script>
-    <link rel='stylesheet' type='text/css' href='/static/style.css'>
+    <script type="module" src="/src/renders.js"></script>
+    <link rel='stylesheet' type='text/css' href='/src/style.css'>
   </head>
 
-  <body onresize="resizeGame()" back>
+  <body>
       <div id="gameArea">
+        <script type="module" src="/src/game.js"></script>
 
         <canvas id="canvas"></canvas>
 
@@ -19,7 +21,7 @@
             <option value="blue">Blue</option>
             <option value="green">Green</option>
           </select>
-          <button id="submitOnEnter" onclick="startGame()">Join</button>
+          <button id="submitOnEnter">Join</button>
         </div>
 
         <div id="chat">
@@ -36,5 +38,4 @@
       </div>
   </body>
 
-  <script src="/static/game.js"></script>
 </html>
