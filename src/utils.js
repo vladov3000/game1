@@ -9,7 +9,7 @@ export function getAbsLoc(object, client) {
 
 }
 
-export function getMousePos(canvas, evt) {
+export function getMousePos(canvas, evt, scale) {
 	// get mouse position on canvas relative to center
 
 	var rect = canvas.getBoundingClientRect(), // abs. size of element
@@ -17,8 +17,8 @@ export function getMousePos(canvas, evt) {
 	scaleY = canvas.height / rect.height;  // relationship bitmap vs. element for Y
 
 	return {
-		x: (evt.clientX - rect.left) * scaleX - center.x,   
-		y: (evt.clientY - rect.top) * scaleY - center.y
+		x: (evt.clientX - rect.left) * scaleX - center.x * scale,   
+		y: (evt.clientY - rect.top) * scaleY - center.y * scale
 	}
 }
 

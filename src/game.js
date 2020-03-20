@@ -40,6 +40,7 @@ var socketid = '';
 
 function resizeGame() {
 	// keep constant game size
+
     var widthToHeight = 4 / 3;
     var newWidth = window.innerWidth;
     var newHeight = window.innerHeight;
@@ -77,7 +78,6 @@ function startChat () {
 
 	chatInput.onkeydown = function(event) {
 	    if (event.keyCode == 13) {
-	    	console.log(chatInput.value.trim())
 	    	if (chatInput.value.trim()!=""){
 	        	sendMessage();
 	    	} else {
@@ -87,7 +87,6 @@ function startChat () {
 	}
 
 	socket.on ('loadMessage',function(data){
-		//console.log(data);
 		let para = document.createElement("p");
 		para.className = "message";
 		let text = document.createTextNode(data);
@@ -136,7 +135,7 @@ function keyToMove() {
 	});
 
 	document.addEventListener('mousemove', function(e) {
-		let point = getMousePos(canvas, e);
+		let point = getMousePos(canvas, e, scale);
         movement.facing = Math.atan(point.y / point.x);
         if (point.x < 0) movement.facing += Math.PI;
     });
@@ -162,9 +161,9 @@ function renderGameObjects(gameObjects) {
 
 	var players = gameObjects.players;
 	var client = players[socketid];
+	var bullets = gameObjects.bullets;
 
 	//render bullets
-	var bullets = gameObjects.bullets;
     for (var bullet of bullets) {
     	renderBullet(bullet, client, context, scale)
     }

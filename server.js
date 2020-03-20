@@ -35,8 +35,9 @@ gameObjects.bullets.push({
 });
 */
 
+// game vars
 bulletv = 10;
-reloadtime = 40;
+reloadtime = 20;
 
 io.on('connection', function(socket) {
 
