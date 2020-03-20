@@ -1,3 +1,5 @@
+var updateGameObjects = require('./updates.js').updateGameObjects
+
 // Dependencies
 var express = require('express');
 var http = require('http');
@@ -21,21 +23,14 @@ server.listen(5000, function() {
 io.on('connection', function(socket) {
 });
 
-// Add Game Objects
+// Init Game Objects
 var gameObjects = {
   players:{},
   bullets:[]
 };
 
-/* make a test bullet
-gameObjects.bullets.push({
-  travangle:2,
-  x:300,
-  y:300
-});
-*/
-
 // game vars
+gunLen = 25;
 bulletv = 10;
 reloadtime = 20;
 
@@ -57,7 +52,8 @@ io.on('connection', function(socket) {
   });
 
   socket.on('movement', function(data) {
-    var player = gameObjects.players[socket.id] || {};
+    let player = gameObjects.players[socket.id] || {};
+
     if (data.left) {
       player.x -= 5;
     }
@@ -70,19 +66,20 @@ io.on('connection', function(socket) {
     if (data.down) {
       player.y += 5;
     }
+
     player.gunAngle = data.facing;
-    //console.log(player.gunAngle);
-    if (player.reload < 0){
+
+    if (data.fire && player.reload < 0) {
       gameObjects.bullets.push({
           travangle: player.gunAngle,
-          x: player.x,
-          y: player.y,
+          x: player.x + gunLen*Math.cos(player.gunAngle),
+          y: player.y + gunLen*Math.sin(player.gunAngle),
           death: 120
       });
-      player.reload = reloadtime;
-    } else {
-      player.reload -= 1;
+      player.reload = reloadtime + 1;
     }
+
+    player.reload -= 1;
   });
 
   socket.on('sendMessage', function(data){
@@ -91,20 +88,14 @@ io.on('connection', function(socket) {
   });
 });
 
+
+
 //update game state
 setInterval(function() {
-  for (i=0; i<gameObjects.bullets.length; i++){
-    let bullet = gameObjects.bullets[i];
-    bullet.x += bulletv*Math.cos(bullet.travangle);
-    bullet.y += bulletv*Math.sin(bullet.travangle);
-    bullet.death -= 1;
-    if (bullet.death < 0){
-      gameObjects.bullets.splice(i,1);
-    }
-  }
-  //console.log(gameObjects.bullets);
+  updateGameObjects(gameObjects);
 }, 1000 / 60);
 
+// send information to clients
 setInterval(function() {
   io.sockets.emit('state', gameObjects);
 }, 1000 / 60);

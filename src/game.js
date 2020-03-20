@@ -31,9 +31,8 @@ var movement = {
   down: false,
   left: false,
   right: false,
-  rright: false,
-  rleft: false,
   facing: 0,
+  fire: false
 }
 var socketid = '';
 
@@ -138,6 +137,14 @@ function keyToMove() {
 		let point = getMousePos(canvas, e, scale);
         movement.facing = Math.atan(point.y / point.x);
         if (point.x < 0) movement.facing += Math.PI;
+    });
+
+    document.addEventListener('mousedown', function(e) {
+    	movement.fire = true;
+    });
+
+    document.addEventListener('mouseup', function(e) {
+    	movement.fire = false;
     });
 
 	setInterval(function() {
