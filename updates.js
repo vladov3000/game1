@@ -1,14 +1,13 @@
-var hash = require('object-hash');
 var updateUtils = require('./updateUtils');
-var circleCollision = updateUtils.circleCollision;
+var objectId = updateUtils.objectId;
 var calculateCollisions = updateUtils.calculateCollisions;
 
 exports.updateGameObjects = function (gameObjects) {
-	calculateCollisions(gameObjects);
-	updateBullets(gameObjects);
+	collisions = calculateCollisions(gameObjects);
+	updateBullets(gameObjects, collisions);
 }
 
-function updateBullets(gameObjects) {
+function updateBullets(gameObjects, collisions) {
 	let bullets = gameObjects.bullets;
     for (i = 0; i < bullets.length; i++) {
 	    let bullet = bullets[i];
@@ -18,12 +17,11 @@ function updateBullets(gameObjects) {
 	    bullet.y += bulletv*Math.sin(bullet.travangle);
 
 	    // handle collisions
-	    /*for (id in gameObjects.players) {
-	    	if (circleCollision(gameObjects.players[id], bullet)) {
-	    		gameObjects.players[id].health -= 10;
-	    		bullets.splice(i,1);
+	    if (collisions[objectId(bullet)]) {
+	    	for (obj of collisions[objectId(bullet)]) {
+	    		onBulletCollision(bullet, obj)
 	    	}
-	    }*/
+	    }
 
 	    // update bullet timer
 	    bullet.death -= 1;
@@ -31,4 +29,12 @@ function updateBullets(gameObjects) {
 	      bullets.splice(i,1);
 	    }
   	}
+}
+
+function onBulletCollision(bullet, obj2) {
+	if (obj2.class.includes("destroyable")) {
+		bullet.death = -1;
+		obj2.health -= 10;
+		console.log("Hit player down to", obj2.health);
+	}
 }

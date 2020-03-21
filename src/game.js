@@ -35,6 +35,7 @@ var movement = {
   fire: false
 }
 var socketid = '';
+var client = {};
 
 
 function resizeGame() {
@@ -167,7 +168,7 @@ function renderGameObjects(gameObjects) {
   	context.clearRect(0, 0, canvas.width, canvas.height);
 
 	var players = gameObjects.players;
-	var client = players[socketid];
+	if (players[socketid]) client = players[socketid];
 	var bullets = gameObjects.bullets;
 
 	//render bullets
@@ -177,8 +178,12 @@ function renderGameObjects(gameObjects) {
 
 	//render players
 	for (var id in players) {
-		   renderPlayer(players[id], client, context, scale)
+		renderPlayer(players[id], client, context, scale)
 	}
+}
+
+function onDeath(data) {
+	console.log('dead');
 }
 
 function startGame(){
@@ -196,6 +201,9 @@ function startGame(){
 
 	// render gameObjects recieved from server
 	socket.on('state', renderGameObjects);
+
+	// handle death
+	socket.on('death', onDeath);
 }
 
 

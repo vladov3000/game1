@@ -40,7 +40,7 @@ io.on('connection', function(socket) {
 
   socket.on('new player', function(data) {
     gameObjects.players[socket.id] = {
-      name: 'player',
+      class: 'destroyable/player',
       x: 300,
       y: 300,
       radius: 10,
@@ -78,7 +78,7 @@ io.on('connection', function(socket) {
 
     if (data.fire && player.reload < 0) {
       gameObjects.bullets.push({
-          name: 'bullet',
+          class: 'bullet',
           travangle: player.gunAngle,
           x: player.x + gunLen*Math.cos(player.gunAngle),
           y: player.y + gunLen*Math.sin(player.gunAngle),
@@ -95,6 +95,11 @@ io.on('connection', function(socket) {
   	console.log('['+gameObjects.players[socket.id].username+']: '+data);
   	io.sockets.emit('loadMessage', '['+gameObjects.players[socket.id].username+']: '+data);
   });
+
+  socket.on('disconnect', function() {
+    // remove disconnected player
+    delete gameObjects.players[socket.id];
+  });
 });
 
 
@@ -102,17 +107,17 @@ io.on('connection', function(socket) {
 //update game state
 setInterval(function() {
   updateGameObjects(gameObjects);
+
+  // handle player death
+  for (socketid of Object.keys(gameObjects.players)) {
+    if (gameObjects.players[socketid].health <= 0) {
+      io.to(socketid).emit('death', '');
+      delete gameObjects.players[socketid];
+    }
+  }
 }, 1000 / 60);
 
 // send information to clients
 setInterval(function() {
   io.sockets.emit('state', gameObjects);
 }, 1000 / 60);
-
-io.on('connection', function(socket) {
-  // other handlers ...
-  socket.on('disconnect', function() {
-    // remove disconnected player
-    delete gameObjects.players[socket.id];
-  });
-});
