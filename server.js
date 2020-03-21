@@ -27,8 +27,7 @@ io.on('connection', function(socket) {
 // Init Game Objects
 var gameObjects = {
   players:{},
-  bullets:[],
-  objects:{}
+  bullets:[]
 };
 
 // game vars
@@ -41,15 +40,18 @@ io.on('connection', function(socket) {
   socket.on('new player', function(data) {
     gameObjects.players[socket.id] = {
       class: 'destroyable/player',
+      // position fields
       x: 300,
       y: 300,
       radius: 10,
+      // player fields
       gunAngle: 0,
       gunLen: 25,
       gunWidth: 10,
       username: data[0],
       type: data[1],
       reload: 0,
+      // destroyable fields
       health: 100
     }
     console.log(gameObjects.players[socket.id]);
@@ -79,10 +81,12 @@ io.on('connection', function(socket) {
     if (data.fire && player.reload < 0) {
       gameObjects.bullets.push({
           class: 'bullet',
-          travangle: player.gunAngle,
+          // position fields
           x: player.x + gunLen*Math.cos(player.gunAngle),
           y: player.y + gunLen*Math.sin(player.gunAngle),
           radius: 5,
+          // bullet fields
+          travangle: player.gunAngle,
           death: 120
       });
       player.reload = reloadtime + 1;
