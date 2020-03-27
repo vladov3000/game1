@@ -1,5 +1,5 @@
 import { renderPlayer, renderBullet } from './renders.js';
-import { getAbsLoc, getMousePos } from './utils.js';
+import { getMousePos } from './utils.js';
 import { line, circle } from './draw.js'
 
 var socket = io();
