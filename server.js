@@ -12,6 +12,7 @@ var io = socketIO(server);
 
 app.set('port', 5000);
 app.use('/src', express.static(__dirname + '/src'));
+app.use(express.static('public'))
 // Routing
 app.get('/', function(request, response) {
   response.sendFile(path.join(__dirname, 'src/index.html'));
@@ -27,8 +28,20 @@ io.on('connection', function(socket) {
 // Init Game Objects
 var gameObjects = {
   players:{},
-  bullets:[]
+  bullets:[],
+  enemies:[],
 };
+
+gameObjects.enemies.push({
+  class: 'enemy',
+  // position fields
+  x: 0,
+  y: 0,
+  width: 20,
+  height: 20,
+  // destroyable fields
+  health: 100
+});
 
 // game vars
 gunLen = 25;
@@ -39,7 +52,7 @@ io.on('connection', function(socket) {
 
   socket.on('new player', function(data) {
     gameObjects.players[socket.id] = {
-      class: 'destroyable/player',
+      class: 'player',
       // position fields
       x: 300,
       y: 300,

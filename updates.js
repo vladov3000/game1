@@ -32,7 +32,7 @@ function updateBullets(gameObjects, collisions) {
 }
 
 function onBulletCollision(bullet, obj2) {
-	if (obj2.class.includes("destroyable")) {
+	if (obj2.health) {
 		bullet.death = -1;
 		obj2.health -= 10;
 		console.log("Hit player down to", obj2.health);

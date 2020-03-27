@@ -15,3 +15,11 @@ export function circle(context,center,radius,color='green') {
     context.fill();
     context.closePath();
 }
+
+export function rectangle(context, center, w, h, color='orange') {
+	context.fillStyle = color;
+	context.beginPath();
+    context.rect(center.x, center.y, w, h);
+    context.fill();
+    context.closePath();
+}

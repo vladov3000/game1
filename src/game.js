@@ -1,5 +1,5 @@
-import { renderPlayer, renderBullet } from './renders.js';
-import { getAbsLoc, getMousePos } from './utils.js';
+import { renderPlayer, renderBullet, renderEnemy } from './renders.js';
+import { getMousePos } from './utils.js';
 import { line, circle } from './draw.js'
 
 var socket = io();
@@ -63,6 +63,8 @@ function resizeGame() {
     gameCanvas.width = newWidth;
     gameCanvas.height = newHeight;
     scale = gameCanvas.width/800;
+
+    context.scale(scale, scale);
 }
 resizeGame()
 
@@ -165,20 +167,27 @@ function addPlayer() {
 }
 
 function renderGameObjects(gameObjects) {
-  	context.clearRect(0, 0, canvas.width, canvas.height);
+  	context.clearRect(0, 0, canvas.width / scale, canvas.height / scale);
 
 	var players = gameObjects.players;
 	if (players[socketid]) client = players[socketid];
 	var bullets = gameObjects.bullets;
 
+	// Note: the order in which objects are rendered determines their layer.
+
 	//render bullets
     for (var bullet of bullets) {
-    	renderBullet(bullet, client, context, scale)
+    	renderBullet(bullet, client, context, scale);
     }
 
-	//render players
+    //render players
 	for (var id in players) {
-		renderPlayer(players[id], client, context, scale)
+		renderPlayer(players[id], client, context, scale);
+	}
+
+    //render enemies
+	for (var enemy of gameObjects.enemies) {
+		renderEnemy(enemy, client, context, scale);
 	}
 }
 
