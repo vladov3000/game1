@@ -39,11 +39,13 @@ io.on('connection', function(socket) {
 
   socket.on('new player', function(data) {
     gameObjects.players[socket.id] = {
-      class: 'destroyable/player',
+      class: 'player',
       // position fields
       x: 300,
       y: 300,
       radius: 10,
+      w: 30,
+      h: 30,
       // player fields
       gunAngle: 0,
       gunLen: 25,

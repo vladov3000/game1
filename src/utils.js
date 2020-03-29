@@ -3,7 +3,7 @@ export var center = {
 	y:300
 }
 
-export function getAbsLoc(object, client) {
+export function getRelPos(object, client) {
 	return {x:object.x-client.x+center.x,
     		y:object.y-client.y+center.y};
 
@@ -22,3 +22,8 @@ export function getMousePos(canvas, evt, scale) {
 	}
 }
 
+export function getImage(path) {
+	let img = new Image();
+	img.src = path;
+	return img;
+}

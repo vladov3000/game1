@@ -1,5 +1,5 @@
-import { renderPlayer, renderBullet } from './renders.js';
-import { getMousePos } from './utils.js';
+import { renderPlayer, renderBullet, renderBackground } from './renders.js';
+import { getMousePos, getImage } from './utils.js';
 import { line, circle } from './draw.js'
 
 var socket = io();
@@ -63,6 +63,9 @@ function resizeGame() {
     gameCanvas.width = newWidth;
     gameCanvas.height = newHeight;
     scale = gameCanvas.width/800;
+
+    context.scale(scale, scale);
+    context.imageSmoothingEnabled = false;
 }
 resizeGame()
 
@@ -165,7 +168,7 @@ function addPlayer() {
 }
 
 function renderGameObjects(gameObjects) {
-  	context.clearRect(0, 0, canvas.width, canvas.height);
+  	context.clearRect(0, 0, canvas.width / scale, canvas.height / scale);
 
 	var players = gameObjects.players;
 	if (players[socketid]) client = players[socketid];
@@ -173,13 +176,15 @@ function renderGameObjects(gameObjects) {
 
 	//render bullets
     for (var bullet of bullets) {
-    	renderBullet(bullet, client, context, scale)
+    	renderBullet(bullet, client, context, scale);
     }
 
 	//render players
 	for (var id in players) {
-		renderPlayer(players[id], client, context, scale)
+		renderPlayer(players[id], client, context, scale);
 	}
+
+	renderBackground(client, context, scale);
 }
 
 function onDeath(data) {
