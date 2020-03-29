@@ -59,10 +59,9 @@ function resizeGame() {
     gameArea.style.marginTop = (-newHeight / 2) + 'px';
     gameArea.style.marginLeft = (-newWidth / 2) + 'px';
     
-    var gameCanvas = document.getElementById('canvas');
-    gameCanvas.width = newWidth;
-    gameCanvas.height = newHeight;
-    scale = gameCanvas.width/800;
+    canvas.width = newWidth;
+    canvas.height = newHeight;
+    scale = canvas.width/800;
 
     context.scale(scale, scale);
     context.imageSmoothingEnabled = false;
@@ -170,9 +169,12 @@ function addPlayer() {
 function renderGameObjects(gameObjects) {
   	context.clearRect(0, 0, canvas.width / scale, canvas.height / scale);
 
+
 	var players = gameObjects.players;
 	if (players[socketid]) client = players[socketid];
 	var bullets = gameObjects.bullets;
+
+	renderBackground(client, context, scale);
 
 	//render bullets
     for (var bullet of bullets) {
@@ -183,8 +185,6 @@ function renderGameObjects(gameObjects) {
 	for (var id in players) {
 		renderPlayer(players[id], client, context, scale);
 	}
-
-	renderBackground(client, context, scale);
 }
 
 function onDeath(data) {

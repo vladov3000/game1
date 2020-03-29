@@ -6,12 +6,6 @@ var playerSprite = getImage('./src/sprites/player/idle/idle0.png');
 var backgroundSprite = getImage('./src/sprites/backgrounds/Demoscr2.png');
 
 export function renderPlayer(player, client, ctx, scale) {
-	let playerScale = {
-    	w: player.w / playerSprite.width,
-    	h: player.h / playerSprite.height
-    }
-
-
     let relPos = getRelPos(player,client);
     relPos = {
     	x: relPos.x - player.w / 2,
@@ -42,9 +36,7 @@ export function renderPlayer(player, client, ctx, scale) {
 
 	ctx.putImageData(canvData, relPos.x, relPos.y);*/
 
-	ctx.drawImage(playerSprite, relPos.x, relPos.y, 
-		player.w * playerScale.w, 
-		player.h * playerScale.h);
+	ctx.drawImage(playerSprite, relPos.x, relPos.y, player.w, player.h);
 }
 
 export function renderBullet(bullet, client, context, scale) {
@@ -54,5 +46,5 @@ export function renderBullet(bullet, client, context, scale) {
 
 export function renderBackground(client, ctx, scale) {
 	let relPos = getRelPos({x: 0, y: 0}, client);
-	ctx.drawImage(backgroundSprite, relPos.x, relPos.y, ctx.width, ctx.height);
+	ctx.drawImage(backgroundSprite, relPos.x, relPos.y, 800, 600);
 }

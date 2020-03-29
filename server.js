@@ -44,8 +44,8 @@ io.on('connection', function(socket) {
       x: 300,
       y: 300,
       radius: 10,
-      w: 30,
-      h: 30,
+      w: 80,
+      h: 80,
       // player fields
       gunAngle: 0,
       gunLen: 25,
