@@ -15,8 +15,9 @@ var messages = document.getElementById("messages");
 var usernameInput = document.getElementById("usernameInput");
 var onEnter = document.getElementById("onEnter");
 var classSelector = document.getElementById("classSelector");
-var body = document.getElementsByTagName("BODY")[0]
-var submitOnEnter = document.getElementById("submitOnEnter")
+var body = document.getElementsByTagName("BODY")[0];
+var submitOnEnter = document.getElementById("submitOnEnter");
+var deathScreen = document.getElementById("deathScreen");
 
 // set component fields
 chat.style.display = "none";
@@ -183,7 +184,8 @@ function renderGameObjects(gameObjects) {
 }
 
 function onDeath(data) {
-	console.log('dead');
+	console.log('client died');
+	deathScreen.style.visibility = 'visible';
 }
 
 function startGame(){

@@ -1,5 +1,8 @@
 // Local imports
-var updateGameObjects = require('./updates.js').updateGameObjects
+var updates = require('./updates.js');
+var updateGameObjects = updates.updateGameObjects;
+var updatePlayer = updates.updatePlayer;
+
 
 // Dependencies
 var express = require('express');
@@ -35,11 +38,17 @@ gunLen = 25;
 bulletv = 10;
 reloadtime = 20;
 
+// 
+function sendMessageToClients(author, text) {
+  console.log(`[${author}]: ${text}`);
+  io.sockets.emit('loadMessage', `[${author}]: ${text}`);
+}
+
 io.on('connection', function(socket) {
 
   socket.on('new player', function(data) {
     gameObjects.players[socket.id] = {
-      class: 'destroyable/player',
+      class: 'player',
       // position fields
       x: 300,
       y: 300,
@@ -61,43 +70,12 @@ io.on('connection', function(socket) {
   });
 
   socket.on('movement', function(data) {
-    let player = gameObjects.players[socket.id] || {};
-
-    if (data.left) {
-      player.x -= 5;
-    }
-    if (data.up) {
-      player.y -= 5;
-    }
-    if (data.right) {
-      player.x += 5;
-    }
-    if (data.down) {
-      player.y += 5;
-    }
-
-    player.gunAngle = data.facing;
-
-    if (data.fire && player.reload < 0) {
-      gameObjects.bullets.push({
-          class: 'bullet',
-          // position fields
-          x: player.x + gunLen*Math.cos(player.gunAngle),
-          y: player.y + gunLen*Math.sin(player.gunAngle),
-          radius: 5,
-          // bullet fields
-          travangle: player.gunAngle,
-          death: 120
-      });
-      player.reload = reloadtime + 1;
-    }
-
-    player.reload -= 1;
+    // update player state based on their movement
+    updatePlayer(data, socket.id, gameObjects);
   });
 
   socket.on('sendMessage', function(data){
-  	console.log('['+gameObjects.players[socket.id].username+']: '+data);
-  	io.sockets.emit('loadMessage', '['+gameObjects.players[socket.id].username+']: '+data);
+    sendMessageToClients(gameObjects.players[socket.id].username, data);
   });
 
   socket.on('disconnect', function() {
@@ -105,8 +83,6 @@ io.on('connection', function(socket) {
     delete gameObjects.players[socket.id];
   });
 });
-
-
 
 //update game state
 setInterval(function() {
@@ -116,6 +92,7 @@ setInterval(function() {
   for (socketid of Object.keys(gameObjects.players)) {
     if (gameObjects.players[socketid].health <= 0) {
       io.to(socketid).emit('death', '');
+      sendMessageToClients('Server', `${gameObjects.players[socketid].username} has died`)
       delete gameObjects.players[socketid];
     }
   }

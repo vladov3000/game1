@@ -8,30 +8,39 @@
 
   <body>
       <div id="gameArea">
+
         <script type="module" src="/src/game.js"></script>
 
         <canvas id="canvas"></canvas>
 
-        <div id="onEnter">
-          <h1>Username:</h1>
-          <input id="usernameInput" type="text">
-          <h2>Class:</h2>
-          <select id="classSelector">
-            <option value="red">Red</option>
-            <option value="blue">Blue</option>
-            <option value="green">Green</option>
-          </select>
-          <button id="submitOnEnter">Join</button>
-        </div>
-
-        <div id="chat">
-
-          <div id=messages>
-            <p class=message>[Server]:Welcome</p>
+        <div id="overlay">
+          
+          <div id="onEnter">
+            <h1>Username:</h1>
+            <input id="usernameInput" type="text">
+            <h2>Class:</h2>
+            <select id="classSelector">
+              <option value="red">Red</option>
+              <option value="blue">Blue</option>
+              <option value="green">Green</option>
+            </select>
+            <button id="submitOnEnter">Join</button>
           </div>
 
-          <div id="chatInputArea">
-            <input id="chatInput" type='text'>
+          <div id="chat">
+
+            <div id=messages>
+              <p class=message>[Server]:Welcome</p>
+            </div>
+
+            <div id="chatInputArea">
+              <input id="chatInput" type='text'>
+            </div>
+
+          </div>
+
+          <div id="deathScreen">
+            <h1> You Died ! </h1>
           </div>
 
         </div>

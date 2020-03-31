@@ -2,51 +2,53 @@ body{
 	background-color:grey;
 }
 
+#gameArea {
+	position: relative;
+}
+
+#overlay {
+	position: absolute;
+	top: 0%;
+	left: 0%;
+	width: 100%;
+	height: 100%;
+}
+
 #onEnter {
-	position:absolute;
-	top:0%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+
 	width:100%;
-	height:100%;
+	height: 100%;
+	text-align: center;
 }
 
 #onEnter h1 {
 	color:white;
 	font-size:150%;
-	position:absolute;
-	top:30%;
-	left:43%;
 }
 
 #onEnter h2 {
 	color:white;
 	font-size:150%;
-	position:absolute;
-	top:45%;
-	left:46%;
 }
 
 #classSelector{
-	position:absolute;
-	height:4%;
-	width:15%;
-	left:42.5%;
-	top:55%;
+	height:5%;
+	width:30%;
+}
+
+#usernameInput {
+	width:30%;
+	height:5%;
 }
 
 #submitOnEnter{
-	position:absolute;
+	margin-top: 3%;
 	height:4%;
 	width:15%;
-	left:42.5%;
-	top:65%;
-}
-
-#usernameInput{
-	position:absolute;
-	top:40%;
-	left:35%;
-	width:30%;
-	height:5%;
 }
 
 #chat {
@@ -88,10 +90,22 @@ body{
 }
 
 #gameArea{
-	position: absolute;
+	position: relative;
 	left: 50%;
 	top: 50%;
-	background-color:black;
+	background-color: black;
+}
+
+#deathScreen {
+	visibility: hidden;
+}
+
+#deathScreen h1 {
+	color:white;
+	font-size:150%;
+	position:absolute;
+	top:30%;
+	left:43%;
 }
 
 canvas {
