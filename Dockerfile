@@ -14,4 +14,4 @@ RUN npm install --silent
 EXPOSE 5000
 
 # code runs when container starts
-ENTRYPOINT["npm", "run", "start"]
+ENTRYPOINT ["npm", "run", "start"]
