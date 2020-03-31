@@ -174,12 +174,14 @@ function renderGameObjects(gameObjects) {
 
 	//render bullets
     for (var bullet of bullets) {
-    	renderBullet(bullet, client, context, scale)
+    	renderBullet(bullet, client, context, scale);
     }
 
 	//render players
 	for (var id in players) {
-		renderPlayer(players[id], client, context, scale)
+		if (!players[id].spectator) {
+			renderPlayer(players[id], client, context, scale);
+		}
 	}
 }
 

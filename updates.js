@@ -20,7 +20,7 @@ exports.updatePlayer = function (data, socketid, gameObjects) {
 
     player.gunAngle = data.facing;
 
-    if (data.fire && player.reload < 0) {
+    if (data.fire && player.reload <= 0 && !player.spectator) {
       gameObjects.bullets.push({
           class: 'bullet',
           // position fields
@@ -34,7 +34,7 @@ exports.updatePlayer = function (data, socketid, gameObjects) {
       player.reload = reloadtime + 1;
     }
 
-    player.reload -= 1;
+    if (--player.reload < 0) player.reload = 0;
 }
 
 exports.updateGameObjects = function (gameObjects) {

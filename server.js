@@ -60,6 +60,7 @@ io.on('connection', function(socket) {
       username: data[0],
       type: data[1],
       reload: 0,
+      spectator: false,
       // destroyable fields
       health: 100
     }
@@ -90,10 +91,11 @@ setInterval(function() {
 
   // handle player death
   for (socketid of Object.keys(gameObjects.players)) {
-    if (gameObjects.players[socketid].health <= 0) {
+    let player = gameObjects.players[socketid];
+    if (!player.spectator && player.health <= 0) {
+      player.spectator = true;
       io.to(socketid).emit('death', '');
-      sendMessageToClients('Server', `${gameObjects.players[socketid].username} has died`)
-      delete gameObjects.players[socketid];
+      sendMessageToClients('Server', `${player.username} has died`)
     }
   }
 }, 1000 / 60);
