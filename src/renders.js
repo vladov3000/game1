@@ -36,7 +36,20 @@ export function renderPlayer(player, client, ctx, scale) {
 
 	ctx.putImageData(canvData, relPos.x, relPos.y);*/
 
+	// flip sprite horizontally if facing other way
+	if (player.gunAngle >= Math.PI / 2){
+		var flipped = true;
+		ctx.scale(-1, 1);
+		ctx.translate(-800, 0);
+	}
+
 	ctx.drawImage(playerSprite, relPos.x, relPos.y, player.w, player.h);
+
+	// reset context; undo changes made above
+	if (flipped){
+		ctx.scale(-1, 1);
+		ctx.translate(-800, 0);
+	}
 }
 
 export function renderBullet(bullet, client, context, scale) {

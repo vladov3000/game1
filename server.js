@@ -50,6 +50,7 @@ io.on('connection', function(socket) {
       gunAngle: 0,
       gunLen: 25,
       gunWidth: 10,
+      gunPivot: {x: 40, y: 0}, 
       username: data[0],
       type: data[1],
       reload: 0,
@@ -63,7 +64,7 @@ io.on('connection', function(socket) {
   });
 
   socket.on('movement', function(data) {
-    let player = gameObjects.players[socket.id] || {};
+    let player = gameObjects.players[socket.id] || {gunPivot: {}};
 
     if (data.left) {
       player.x -= 5;
@@ -79,12 +80,14 @@ io.on('connection', function(socket) {
     }
 
     player.gunAngle = data.facing;
+    player.gunPivot.x = Math.abs(player.gunPivot.x) * ((player.gunAngle >= Math.PI / 2) * -2 + 1)
 
     if (data.fire && player.reload < 0) {
       gameObjects.bullets.push({
           class: 'bullet',
           // position fields
-          x: player.x + gunLen*Math.cos(player.gunAngle),
+          x: player.x + player.gunPivot.x
+              + gunLen*Math.cos(player.gunAngle),
           y: player.y + gunLen*Math.sin(player.gunAngle),
           radius: 5,
           // bullet fields

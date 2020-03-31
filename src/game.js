@@ -138,6 +138,10 @@ function keyToMove() {
 
 	document.addEventListener('mousemove', function(e) {
 		let point = getMousePos(canvas, e, scale);
+		point = {
+			x: point.x -  client.gunPivot.x,
+			y: point.y -  client.gunPivot.y
+		};
         movement.facing = Math.atan(point.y / point.x);
         if (point.x < 0) movement.facing += Math.PI;
     });
@@ -167,6 +171,7 @@ function addPlayer() {
 }
 
 function renderGameObjects(gameObjects) {
+
   	context.clearRect(0, 0, canvas.width / scale, canvas.height / scale);
 
 
