@@ -1,5 +1,5 @@
 // Local imports
-var updates = require('./updates.js');
+var updates = require('./extras/updates.js');
 var updateGameObjects = updates.updateGameObjects;
 var updatePlayer = updates.updatePlayer;
 
@@ -61,7 +61,6 @@ io.on('connection', function(socket) {
       type: data[1],
       reload: 0,
       spectator: false,
-      // destroyable fields
       health: 100
     }
     console.log(gameObjects.players[socket.id]);
