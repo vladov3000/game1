@@ -1,7 +1,12 @@
+// Imports
 var updateUtils = require('./updateUtils');
 var objectId = updateUtils.objectId;
 var calculateCollisions = updateUtils.calculateCollisions;
 
+var collisions = require('./collisions.js');
+onBulletCollision = collisions.onBulletCollision;
+
+// Update funcs
 exports.updatePlayer = function (data, socketid, gameObjects) {
 	let player = gameObjects.players[socketid] || {};
 
@@ -64,12 +69,4 @@ function updateBullets(gameObjects, collisions) {
 	      bullets.splice(i,1);
 	    }
   	}
-}
-
-function onBulletCollision(bullet, obj2) {
-	if (obj2.health) {
-		bullet.death = -1;
-		obj2.health -= 10;
-		console.log(`Hit ${obj2.class} down to`, obj2.health);
-	}
 }
